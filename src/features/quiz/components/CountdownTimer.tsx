@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import StopwatchIcon from "@/assets/stopwatch-icon.png"; // ikon hijau
+import { MdTimer } from "react-icons/md";
 
 interface CountdownTimerProps {
   initialSeconds: number;
@@ -23,17 +23,26 @@ const CountdownTimer = ({ initialSeconds, onFinish }: CountdownTimerProps) => {
   }, [secondsLeft, onFinish]);
 
   const formatTime = (totalSeconds: number) => {
+    if (totalSeconds < 60) {
+      return `${totalSeconds}s`;
+    }
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return `00:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
-      2,
-      "0"
-    )}`;
+    return `${minutes}:${String(seconds).padStart(2, "0")}`;
+  };
+
+  // warna timer
+  const getTimerColor = () => {
+    if (secondsLeft <= 10) return "text-red-500";
+    if (secondsLeft <= 20) return "text-orange-500";
+    return "text-gray-700";
   };
 
   return (
-    <div className="flex items-center gap-2 text-lg font-mono">
-      <img src={StopwatchIcon} alt="timer" className="w-5 h-5" />
+    <div
+      className={`flex items-center gap-1.5 text-lg font-mono font-semibold ${getTimerColor()}`}
+    >
+      <MdTimer className="size-5" />
       <span>{formatTime(secondsLeft)}</span>
     </div>
   );
