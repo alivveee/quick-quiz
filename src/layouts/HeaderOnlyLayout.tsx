@@ -1,7 +1,7 @@
 import Header from "@/components/header/header";
 import { Outlet } from "react-router";
 
-const HeadaerOnlyLayout = () => {
+const HeaderOnlyLayout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -12,4 +12,4 @@ const HeadaerOnlyLayout = () => {
   );
 };
 
-export default HeadaerOnlyLayout;
+export default HeaderOnlyLayout;

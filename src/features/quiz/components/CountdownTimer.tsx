@@ -33,8 +33,8 @@ const CountdownTimer = ({ initialSeconds, onFinish }: CountdownTimerProps) => {
 
   // warna timer
   const getTimerColor = () => {
-    if (secondsLeft <= 10) return "text-red-500";
-    if (secondsLeft <= 20) return "text-orange-500";
+    if (secondsLeft <= 5) return "text-red-500";
+    if (secondsLeft <= 10) return "text-orange-500";
     return "text-gray-700";
   };
 

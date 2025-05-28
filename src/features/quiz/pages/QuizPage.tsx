@@ -1,10 +1,10 @@
+import { Button } from "@/components/ui/button";
 import CountdownTimer from "@/features/quiz/components/CountdownTimer";
-import { imageMap } from "@/lib";
 import { useState } from "react";
 import "react-circular-progressbar/dist/styles.css";
 import { MdCheckCircle } from "react-icons/md";
+import { useNavigate } from "react-router";
 import CircularProgress from "../components/CircularProgress";
-import { Button } from "@/components/ui/button";
 
 const questions = [
   {
@@ -131,6 +131,7 @@ const QuizPage = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [score, setScore] = useState(0);
 
+  const navigate = useNavigate();
   const currentQuestion = questions[currentQuestionIndex];
 
   const goToNextQuestion = () => {
@@ -187,11 +188,7 @@ const QuizPage = () => {
           {/* Kiri: Info Quiz */}
           <div className="flex gap-3 items-center min-w-0 flex-1">
             <div className="size-13 bg-primary rounded-lg p-3.5">
-              <img
-                src={imageMap[1]}
-                alt="quickquizlogo"
-                className="h-full w-full object-cover"
-              />
+             
             </div>
             <div className="flex flex-col justify-center gap-0.5 min-w-0">
               <h1 className="text-lg md:text-xl font-bold truncate">
@@ -216,7 +213,7 @@ const QuizPage = () => {
               </div>
             </div>
           ) : (
-           <Button>Browse All Quizzes</Button>
+            <Button onClick={() => navigate("/")}>Browse All Quizzes</Button>
           )}
         </div>
 
@@ -280,7 +277,9 @@ const QuizPage = () => {
               <CircularProgress score={score} totalScore={questions.length} />
               <div className="flex gap-6">
                 <Button onClick={handleRestart}>Play Again</Button>
-                <Button variant="outline">See My Result</Button>
+                <Button variant="outline" onClick={() => navigate("/profile")}>
+                  See My Result
+                </Button>
               </div>
             </div>
           )}
