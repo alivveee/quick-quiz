@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import CountdownTimer from "@/features/quiz/components/CountdownTimer";
+import { useHistoryStorage } from "@/hooks/useHistoryStorage";
 import { categoryIconMap } from "@/lib";
 import { useEffect, useMemo, useState } from "react";
 import "react-circular-progressbar/dist/styles.css";
@@ -7,7 +7,6 @@ import { useNavigate, useSearchParams } from "react-router";
 import QuestionSection from "../components/QuestionSection";
 import ResultCard from "../components/ResultCard";
 import { useQuizQuestions } from "../hooks/useQuizQuestions";
-import { useHistoryStorage } from "@/hooks/useHistoryStorage";
 
 const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -140,7 +139,7 @@ const QuizPage = () => {
           </div>
 
           {/* Kanan: Timer dan nomor soal */}
-          {!isFinished ? (
+          {!isFinished && (
             <div className="flex items-center gap-3 md:gap-4 flex-shrink-0 ml-4">
               <CountdownTimer
                 key={currentQuestionIndex}
@@ -151,8 +150,6 @@ const QuizPage = () => {
                 {currentQuestionIndex + 1}/{questions.length}
               </div>
             </div>
-          ) : (
-            <Button onClick={() => navigate("/")}>Browse All Quizzes</Button>
           )}
         </div>
 

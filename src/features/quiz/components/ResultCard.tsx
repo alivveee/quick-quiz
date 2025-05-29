@@ -47,6 +47,7 @@ const ResultCard = ({ correct, totalQuestion, onRestart }: Props) => {
           See My History
         </Button>
       </div>
+      <Button onClick={() => navigate("/")}>Browse All Quizzes</Button>
     </div>
   );
 };
