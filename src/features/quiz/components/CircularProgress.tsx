@@ -43,7 +43,7 @@ const CircularProgress = ({
       >
         <div className="flex flex-col justify-between h-13">
           <div className="px-1 py-2 mt-[-76px] bg-primary rounded-md flex items-center justify-center text-sm font-semibold text-white">
-            <h1>Your correct</h1>
+            <h1>Your Score</h1>
           </div>
           <div className="flex flex-col items-center justify-center">
             <span className="text-3xl font-bold text-gray-800">
