@@ -1,137 +1,72 @@
 import { Button } from "@/components/ui/button";
 import CountdownTimer from "@/features/quiz/components/CountdownTimer";
-import { useState } from "react";
+import { categoryIconMap } from "@/lib";
+import { useEffect, useMemo, useState } from "react";
 import "react-circular-progressbar/dist/styles.css";
-import { MdCheckCircle } from "react-icons/md";
-import { useNavigate } from "react-router";
-import CircularProgress from "../components/CircularProgress";
-
-const questions = [
-  {
-    id: 1,
-    question: "Apa ibu kota Indonesia?",
-    options: ["Jakarta", "Bandung", "Surabaya", "Medan"],
-    correct: 0,
-    type: "multiple",
-  },
-  {
-    id: 2,
-    question: "Apa simbol kimia untuk air?",
-    options: ["H2O", "CO2", "NaCl", "O2"],
-    correct: 0,
-    type: "multiple",
-  },
-  {
-    id: 3,
-    question: "Thomas Edison menemukan lampu pijar",
-    options: ["Benar", "Salah"],
-    correct: 0,
-    type: "boolean",
-  },
-  {
-    id: 4,
-    question: "Apa planet terdekat dengan matahari?",
-    options: ["Merkurius", "Venus", "Bumi", "Mars"],
-    correct: 0,
-    type: "multiple",
-  },
-  {
-    id: 5,
-    question: "George Washington adalah presiden pertama Amerika Serikat",
-    options: ["Benar", "Salah"],
-    correct: 0,
-    type: "boolean",
-  },
-  {
-    id: 6,
-    question: "Apa nama ilmiah untuk manusia?",
-    options: [
-      "Homo sapiens",
-      "Homo erectus",
-      "Homo neanderthalensis",
-      "Homo sapiens neanderthalensis",
-    ],
-    correct: 0,
-    type: "multiple",
-  },
-  {
-    id: 7,
-    question: "Siapa penulis novel 'Harry Potter'?",
-    options: [
-      "J.K. Rowling",
-      "Stephen King",
-      "Suzanne Collins",
-      "George R.R. Martin",
-    ],
-    correct: 0,
-    type: "multiple",
-  },
-  {
-    id: 8,
-    question: "Benua terbesar di dunia adalah Asia",
-    options: ["Benar", "Salah"],
-    correct: 0,
-    type: "boolean",
-  },
-  {
-    id: 9,
-    question: "Berapa jumlah warna pada pelangi?",
-    options: ["5", "6", "7", "8"],
-    correct: 2,
-    type: "multiple",
-  },
-  {
-    id: 10,
-    question: "Gunung Everest terletak di India",
-    options: ["Benar", "Salah"],
-    correct: 1,
-    type: "boolean",
-  },
-  {
-    id: 11,
-    question: "Apa satuan ukuran arus listrik?",
-    options: ["Ampere", "Volt", "Ohm", "Watt"],
-    correct: 0,
-    type: "multiple",
-  },
-  {
-    id: 12,
-    question: "Elang bisa terbang",
-    options: ["Benar", "Salah"],
-    correct: 0,
-    type: "boolean",
-  },
-  {
-    id: 13,
-    question: "Siapa presiden ke-7 Indonesia?",
-    options: ["Joko Widodo", "Susilo Bambang Yudhoyono", "Megawati", "Habibie"],
-    correct: 0,
-    type: "multiple",
-  },
-  {
-    id: 14,
-    question: "Berapa sisi yang dimiliki segitiga?",
-    options: ["2", "3", "4", "5"],
-    correct: 1,
-    type: "multiple",
-  },
-  {
-    id: 15,
-    question: "Bumi mengelilingi matahari dalam waktu 365 hari",
-    options: ["Benar", "Salah"],
-    correct: 0,
-    type: "boolean",
-  },
-];
+import { useNavigate, useSearchParams } from "react-router";
+import QuestionSection from "../components/QuestionSection";
+import ResultCard from "../components/ResultCard";
+import { useQuizQuestions } from "../hooks/useQuizQuestions";
+import { useHistoryStorage } from "@/hooks/useHistoryStorage";
 
 const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
-  const [score, setScore] = useState(0);
-
+  const [correct, setCorrect] = useState(0);
+  const { addHistory } = useHistoryStorage();
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const { amount, category, type, title } = useMemo(() => {
+    return {
+      amount: searchParams.get("amount")!,
+      category: searchParams.get("category")!,
+      type: searchParams.get("type")!,
+      title: searchParams.get("title")!,
+    };
+  }, [searchParams]);
+
+  const IconComponent =
+    categoryIconMap[Number(category) as keyof typeof categoryIconMap];
+
+  const { data: questions, loading } = useQuizQuestions({
+    amount,
+    category,
+    type,
+  });
+
+  useEffect(() => {
+    if (isFinished) {
+      const totalQuestions = questions.length;
+      const accuracy = Math.round((correct / totalQuestions) * 100);
+      const score = Math.floor((correct / totalQuestions) * 1000);
+
+      addHistory({
+        category,
+        title,
+        type,
+        questions: totalQuestions,
+        correct: correct,
+        score: score,
+        accuracy,
+      });
+    }
+  }, [isFinished]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-6 text-center px-4 py-8">
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Getting your questions ready...
+          </h2>
+          <p className="text-gray-600 text-sm">This won't take long! ⏳</p>
+        </div>
+      </div>
+    );
+  }
   const currentQuestion = questions[currentQuestionIndex];
 
   const goToNextQuestion = () => {
@@ -151,7 +86,7 @@ const QuizPage = () => {
     setIsAnswered(true);
 
     if (answerIndex === currentQuestion.correct) {
-      setScore((prev) => prev + 1);
+      setCorrect((prev) => prev + 1);
     }
 
     // Delay ke pertanyaan berikutnya
@@ -177,25 +112,29 @@ const QuizPage = () => {
   };
 
   const handleRestart = () => {
-    // refresh the page
+    navigate(0);
   };
 
   return (
     <div className="flex-1 flex flex-col">
       {/* Header */}
       <div>
-        <div className="flex justify-between items-center w-full px-4 py-3">
+        <div className="flex flex-col gap-2 md:flex-row justify-between items-center w-full px-4 py-3">
           {/* Kiri: Info Quiz */}
-          <div className="flex gap-3 items-center min-w-0 flex-1">
-            <div className="size-13 bg-primary rounded-lg p-3.5">
-             
+          <div className="flex gap-3 items-center min-w-0 flex-1 self-start md:self-auto">
+            <div className="flex items-center justify-center size-10 md:size-12 bg-primary rounded-lg p-3.5">
+              {IconComponent && (
+                <IconComponent className="text-white size-4 md:size-5 group-hover:scale-110 transition-all duration-300" />
+              )}
             </div>
             <div className="flex flex-col justify-center gap-0.5 min-w-0">
-              <h1 className="text-lg md:text-xl font-bold truncate">
-                General Knowledge
-              </h1>
+              <h1 className="text-md md:text-xl font-bold truncate">{title}</h1>
               <p className="text-xs md:text-sm text-gray-500 truncate">
-                Multiple choice & true/false
+                {type === "any"
+                  ? "Multiple Choice or True/False"
+                  : type === "multiple"
+                  ? "Multiple Choice"
+                  : "True or False"}
               </p>
             </div>
           </div>
@@ -234,54 +173,18 @@ const QuizPage = () => {
       <div className="flex-1 flex items-center justify-center">
         <div className="w-full max-w-3xl">
           {!isFinished ? (
-            <>
-              {/* Question */}
-              <div className="p-6">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-500">
-                    {currentQuestion.type === "multiple"
-                      ? "Multiple Choice"
-                      : "True/False"}
-                  </span>
-                </div>
-                <h2 className="text-xl md:text-2xl font-bold text-gray-800">
-                  {currentQuestion.question}
-                </h2>
-              </div>
-              {/* Answer Options */}
-              <div className="space-y-3">
-                {currentQuestion.options.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswerSelect(index)}
-                    disabled={isAnswered}
-                    className={`w-full p-3 border-2 rounded-md transition-all duration-200 ${getOptionClass(
-                      index
-                    )}`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium">{option}</span>
-                      {isAnswered && index === currentQuestion.correct && (
-                        <MdCheckCircle className="size-5 text-green-600" />
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </>
+            <QuestionSection
+              currentQuestion={currentQuestion}
+              isAnswered={isAnswered}
+              handleAnswerSelect={handleAnswerSelect}
+              getOptionClass={getOptionClass}
+            />
           ) : (
-            <div className="flex flex-col items-center gap-4">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
-                Congratulations!
-              </h2>
-              <CircularProgress score={score} totalScore={questions.length} />
-              <div className="flex gap-6">
-                <Button onClick={handleRestart}>Play Again</Button>
-                <Button variant="outline" onClick={() => navigate("/profile")}>
-                  See My Result
-                </Button>
-              </div>
-            </div>
+            <ResultCard
+              correct={correct}
+              totalQuestion={questions.length}
+              onRestart={handleRestart}
+            />
           )}
         </div>
       </div>

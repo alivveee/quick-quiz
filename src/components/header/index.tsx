@@ -2,22 +2,26 @@ import { Link, useNavigate } from "react-router";
 import { Button } from "../ui/button";
 import { useSessionStore } from "@/store/useSessionStore";
 import { FaUserCircle } from "react-icons/fa";
+import { Skeleton } from "../ui/skeleton";
 
 const Header = () => {
-  const { session } = useSessionStore();
+  const { session, isLoading } = useSessionStore();
   const navigate = useNavigate();
 
   return (
     <header className="bg-primary text-white h-22 flex items-center justify-between p-6">
       <Link to="/" className="flex justify-between items-center">
-        <img src="/quickquiz.svg" alt="quickquizlogo" className="h-12" />
+        <img src="/quickquiz.svg" alt="quickquizlogo" className="h-11" />
       </Link>
-      {session ? (
-        <div className="flex gap-3 items-center">
+
+      {isLoading ? (
+        <div className="flex items-center">
+          <Skeleton className="h-10 w-10 rounded-full bg-white/90" />
+        </div>
+      ) : session ? (
           <Link to="/profile" className="">
             <FaUserCircle size={42} className="text-white" />
           </Link>
-        </div>
       ) : (
         <Button
           onClick={() => {

@@ -1,50 +1,57 @@
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useNavigate } from "react-router";
+import SelectField from "@/components/SelectField";
+import { useState } from "react";
+import ConfirmAlertDialog from "../components/AlertDialog";
+import { useSearchParams } from "react-router";
 
 const QuizStartPage = () => {
-  const navigate = useNavigate(); // initialize navigate
+  const [amount, setAmount] = useState("10");
+  const [type, setType] = useState("any");
 
-  const onStartQuiz = () => {
-    navigate("/quiz/1"); // programmatic navigation
-  };
+  const [searchParams] = useSearchParams();
+  const title = searchParams.get("title");
+  const category = searchParams.get("category");
+
+  const questionOptions = [
+    { label: "5", value: "5" },
+    { label: "10", value: "10" },
+    { label: "15", value: "15" },
+    { label: "20", value: "20" },
+  ];
+
+  const typeOptions = [
+    { label: "Multiple Choice", value: "multiple" },
+    { label: "Any Type", value: "any" },
+  ];
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center gap-3 bg-white p-6 rounded-lg shadow-md">
+      <div className="flex flex-col items-center gap-4 bg-white p-6 rounded-lg shadow-md">
         <div className="flex flex-row items-center justify-center w-[200px] border-1 mt-[-40px] bg-primary p-1 rounded-sm text-white font-bold">
           Your Quiz
         </div>
-        <h1 className="text-xl font-bold">General Knowlege</h1>
-        <div className="flex justify-between w-full gap-2">
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Number of questions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="15">15</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="5">any type</SelectItem>
-              <SelectItem value="10">multiple choice</SelectItem>
-              <SelectItem value="15">true or false</SelectItem>
-            </SelectContent>
-          </Select>
+        <h1 className="text-xl font-bold">{title}</h1>
+        <div className="flex flex-wrap justify-center w-full gap-2">
+          <SelectField
+            label="Number of Questions"
+            options={questionOptions}
+            placeholder="Number of Questions"
+            value={amount}
+            onChange={setAmount}
+          />
+          <SelectField
+            label="Type"
+            options={typeOptions}
+            placeholder="Select Type"
+            value={type}
+            onChange={setType}
+          />
         </div>
-        <Button onClick={onStartQuiz} className="w-full font-bold">Start</Button>
+        <ConfirmAlertDialog
+          amount={amount}
+          type={type}
+          category={category!}
+          title={title!}
+        />
       </div>
     </div>
   );

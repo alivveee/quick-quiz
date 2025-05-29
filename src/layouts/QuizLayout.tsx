@@ -11,7 +11,7 @@ const QuizLayout = () => {
     return <Navigate to="/login" />;
   }
   return (
-    <main className="flex flex-col min-h-screen px-22 py-8 bg-primary/15">
+    <main className="flex flex-col min-h-screen px-4 md:px-22 py-4 md:py-8 bg-secondary/5">
       <Outlet />
     </main>
   );
