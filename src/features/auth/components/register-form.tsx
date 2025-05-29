@@ -87,7 +87,7 @@ export function RegisterForm() {
                 <Input
                   id="name"
                   type="text"
-                  placeholder="Your Name"
+                  placeholder="Alif Ahmad"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
