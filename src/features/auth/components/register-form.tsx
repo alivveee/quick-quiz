@@ -11,16 +11,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { useSessionStore } from "@/store/useSessionStore";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export function RegisterForm() {
   const navigate = useNavigate();
-  const { setSession } = useSessionStore();
-
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+
+  const { setSession } = useSessionStore();
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const redirectTo = queryParams.get("redirect") || "/profile";
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -50,13 +55,12 @@ export function RegisterForm() {
       },
     });
 
-    console.log(data, error);
-
     if (error) {
       setErrorMsg(error.message);
     } else {
       setSession(data.session);
-      navigate("/login");
+      toast("Registration successful!");
+      navigate(redirectTo);
     }
   };
 

@@ -1,26 +1,49 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MdTimer } from "react-icons/md";
 
 interface CountdownTimerProps {
   initialSeconds: number;
   onFinish?: () => void;
+  isPaused?: boolean;
 }
 
-const CountdownTimer = ({ initialSeconds, onFinish }: CountdownTimerProps) => {
+const CountdownTimer = ({
+  initialSeconds,
+  onFinish,
+  isPaused = false,
+}: CountdownTimerProps) => {
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (secondsLeft <= 0) {
-      onFinish?.();
+    setSecondsLeft(initialSeconds);
+  }, [initialSeconds]);
+
+  useEffect(() => {
+    if (isPaused) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
       return;
     }
 
-    const timer = setInterval(() => {
-      setSecondsLeft((prev) => prev - 1);
+    intervalRef.current = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current!);
+          onFinish?.();
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [secondsLeft, onFinish]);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isPaused, onFinish]);
 
   const formatTime = (totalSeconds: number) => {
     if (totalSeconds < 60) {
@@ -31,7 +54,6 @@ const CountdownTimer = ({ initialSeconds, onFinish }: CountdownTimerProps) => {
     return `${minutes}:${String(seconds).padStart(2, "0")}`;
   };
 
-  // warna timer
   const getTimerColor = () => {
     if (secondsLeft <= 5) return "text-red-500";
     if (secondsLeft <= 10) return "text-orange-500";

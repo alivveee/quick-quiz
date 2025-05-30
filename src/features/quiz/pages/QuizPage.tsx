@@ -147,6 +147,7 @@ const QuizPage = () => {
                 key={currentQuestionIndex}
                 initialSeconds={20}
                 onFinish={goToNextQuestion}
+                isPaused={isAnswered}
               />
               <div className="px-2.5 py-1.5 bg-primary text-white rounded-md text-xs md:text-sm font-semibold">
                 {currentQuestionIndex + 1}/{questions.length}

@@ -121,7 +121,16 @@ export function LoginForm() {
 
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <Link to={"/register"} className="underline underline-offset-4">
+                <Link
+                  to={
+                    "/register" +
+                    (queryParams.get("redirect")
+                      ? "?redirect=" +
+                        encodeURIComponent(queryParams.get("redirect")!)
+                      : "")
+                  }
+                  className="underline underline-offset-4"
+                >
                   Register
                 </Link>
               </div>

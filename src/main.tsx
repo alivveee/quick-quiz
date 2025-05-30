@@ -1,4 +1,3 @@
-
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import LoginPage from "./features/auth/pages/LoginPage.tsx";
@@ -12,10 +11,10 @@ import HeaderOnlyLayout from "./layouts/HeaderOnlyLayout.tsx";
 import HomeLayout from "./layouts/HomeLayout.tsx";
 import QuizLayout from "./layouts/QuizLayout.tsx";
 import AuthSessionSync from "./providers/AuthSessionSync.tsx";
+import { Toaster } from "sonner";
 
 createRoot(document.getElementById("root")!).render(
   <>
-    <AuthSessionSync />
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomeLayout />}>
@@ -32,5 +31,8 @@ createRoot(document.getElementById("root")!).render(
         </Route>
       </Routes>
     </BrowserRouter>
+
+    <AuthSessionSync />
+    <Toaster />
   </>
 );
