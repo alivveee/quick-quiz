@@ -1,4 +1,3 @@
-// src/providers/AuthSessionSync.tsx
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useSessionStore } from "@/store/useSessionStore";

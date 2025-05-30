@@ -1,17 +1,20 @@
-// components/ResultCard.tsx
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import CircularProgress from "./CircularProgress";
+import ResultItem from "./ResultItem";
 
 type Props = {
   correct: number;
+  answered: number;
   totalQuestion: number;
   onRestart: () => void;
 };
 
-const ResultCard = ({ correct, totalQuestion, onRestart }: Props) => {
+const ResultCard = ({ correct, answered, totalQuestion, onRestart }: Props) => {
   const navigate = useNavigate();
-  const accuracy = Math.round((correct / totalQuestion) * 100);
+  const incorrect = answered - correct;
+  const unanswered = totalQuestion - answered;
+  const accuracy = answered === 0 ? 0 : Math.round((correct / answered) * 100);
 
   return (
     <div className="flex flex-col items-center gap-3 mt-2">
@@ -23,19 +26,21 @@ const ResultCard = ({ correct, totalQuestion, onRestart }: Props) => {
           {/* Circular Progress */}
           <CircularProgress correct={correct} totalQuestion={totalQuestion} />
 
-          <div className="flex flex-col gap-2 min-w-[160px]">
-            <div className="flex justify-between">
-              <span className="font-medium text-gray-700">Questions</span>
-              <span>{totalQuestion}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-medium text-gray-700">Correct Answers</span>
-              <span>{correct}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-medium text-gray-700">Accuracy</span>
-              <span>{accuracy}%</span>
-            </div>
+          <div className="flex flex-col gap-2 min-w-[180px]">
+            <ResultItem label="Total Questions" value={totalQuestion} />
+            <ResultItem label="Answered" value={answered} />
+            <ResultItem
+              label="Correct"
+              value={correct}
+              className="text-green-700"
+            />
+            <ResultItem
+              label="Incorrect"
+              value={incorrect}
+              className="text-red-700"
+            />
+            <ResultItem label="Unanswered" value={unanswered} />
+            <ResultItem label="Accuracy" value={`${accuracy}%`} />
           </div>
         </div>
       </div>

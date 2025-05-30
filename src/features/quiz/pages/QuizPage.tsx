@@ -10,6 +10,7 @@ import { useQuizQuestions } from "../hooks/useQuizQuestions";
 
 const QuizPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answered, setAnswered] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
@@ -83,6 +84,7 @@ const QuizPage = () => {
 
     setSelectedAnswer(answerIndex);
     setIsAnswered(true);
+    setAnswered((prev) => prev + 1);
 
     if (answerIndex === currentQuestion.correct) {
       setCorrect((prev) => prev + 1);
@@ -179,6 +181,7 @@ const QuizPage = () => {
           ) : (
             <ResultCard
               correct={correct}
+              answered={answered}
               totalQuestion={questions.length}
               onRestart={handleRestart}
             />
