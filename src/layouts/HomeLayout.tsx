@@ -5,7 +5,7 @@ const HomeLayout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex flex-col flex-1 md:px-22 py-4 md:py-8 bg-secondary/5">
+      <main className="flex flex-col flex-1 px-6 md:px-20 py-4 md:py-8 bg-secondary/5">
         <Outlet />
       </main>
       <footer className="bg-secondary text-white p-4 flex justify-center items-center">
