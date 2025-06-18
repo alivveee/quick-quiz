@@ -37,7 +37,7 @@ const ConfirmAlertDialog = ({
           <AlertDialogTitle></AlertDialogTitle>
           <AlertDialogDescription>
             {session ? (
-              <div className="space-y-2 text-gray-700">
+              <div className="space-y-2 text-gray-700  text-center">
                 <p>
                   Hey{" "}
                   <span className="font-medium text-gray-900">

@@ -5,7 +5,7 @@ const HeaderOnlyLayout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex flex-col flex-1 md:px-22 py-4 md:py-8 bg-secondary/5">
+      <main className="flex flex-col flex-1 p-4 md:px-22 md:py-8 bg-secondary/5">
         <Outlet />
       </main>
     </div>

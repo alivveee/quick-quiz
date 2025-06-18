@@ -11,14 +11,19 @@ import { useSessionStore } from "@/store/useSessionStore";
 import { supabase } from "@/lib/supabase";
 import { useNavigate } from "react-router";
 import HistoryCard from "../components/HistoryCard";
-import { useHistoryStorage } from "@/hooks/useHistoryStorage";
+import {
+  useHistoryStorage,
+  type QuizHistoryItem,
+} from "@/hooks/useHistoryStorage";
 
 const ProfilePage = () => {
   const { session } = useSessionStore();
   const [activeTab, setActiveTab] = useState("History");
   const navigate = useNavigate();
-  const { getHistory } = useHistoryStorage();
-  const historyData = getHistory();
+  const { getHistory, emptyHistory } = useHistoryStorage();
+  const [historyData, setHistoryData] = useState<QuizHistoryItem[]>(
+    getHistory()
+  );
 
   const totalQuestions = historyData.reduce(
     (sum, item) => sum + item.questions,
@@ -35,9 +40,9 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col gap-6 p-4 md:p-6">
+    <div className="flex-1 flex flex-col gap-6">
       {/* Profile Header */}
-      <div className="rounded-lg md:rounded-xl bg-white shadow-lg">
+      <div className="rounded-lg md:rounded-lg bg-white shadow-lg">
         <div className="relative p-4 md:p-6 lg:p-8">
           <Button
             onClick={handleLogout}
@@ -96,7 +101,7 @@ const ProfilePage = () => {
           onClick={() => setActiveTab("History")}
           className={`rounded-xl px-4 md:px-6 py-2 md:py-3 font-semibold transition-all w-full sm:w-auto ${
             activeTab === "History"
-              ? "shadow-lg shadow-primary/25"
+              ? "bg-primary text-white"
               : "bg-white  text-muted-foreground hover:bg-muted border"
           }`}
           variant={activeTab === "History" ? "default" : "outline"}
@@ -111,6 +116,17 @@ const ProfilePage = () => {
         >
           Settings
         </Button>
+        <div className="flex flex-1 flex-row-reverse">
+          <Button
+            className="rounded-lg px-4 md:px-6 py-2 md:py-3 font-semibold bg-white border text-muted-foreground hover:bg-muted w-full sm:w-auto"
+            onClick={() => {
+              emptyHistory();
+              setHistoryData([]);
+            }}
+          >
+            Empty History
+          </Button>
+        </div>
       </div>
 
       {/* History Cards */}

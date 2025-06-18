@@ -40,8 +40,13 @@ export function useHistoryStorage() {
     [getHistory]
   );
 
+  const emptyHistory = useCallback(() => {
+    localStorage.removeItem(HISTORY_KEY);
+  }, []);
+
   return {
     getHistory,
     addHistory,
+    emptyHistory,
   };
 }
